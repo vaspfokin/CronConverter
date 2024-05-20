@@ -19,8 +19,8 @@ function CustomMultiSelect ({selectedOptions, setSelectedOptions, option}){
       
           <div className="custom-multi-select">
             <div className="selected-options border rounded row m-0">
-              <div className='col-7 px-0 mx-0' style={{flexGrow: '1'}}>
-                {selectedOptions.length === 0 ? <span>{option.placeholder}</span> : selectedOptions.map((option) => (
+              <div className='col-7 p-2 mx-0' style={{flexGrow: '1'}}>
+                {selectedOptions.length === 0 ? <span className=''>{option.placeholder}</span> : selectedOptions.map((option) => (
                 <>
                 <button className='dropdown__input-wrapper'  onClick={optionOnclick} value={option}>{option}</button> 
                 ,

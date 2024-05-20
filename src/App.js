@@ -5,13 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { data } from './Resourses/Data';
 import { getOutputString } from './Resourses/OutputHandlers';
 import { CustomMultiSelect } from './Resourses/Blocks';
-import { ValidateInputString } from './Resourses/InputHandlers';
-
-
-
-
-
-//{selectedHours, setSelectedHours, selectedMinutes, setSelectedMinutes, hourOption, minuteOption, atEveryOption, setAtEveryOption}
+import { ValidateAndSetData } from './Resourses/InputHandlers';
 
 
 function Main({inputCron, reload, setOutput, save}) {
@@ -25,8 +19,7 @@ function Main({inputCron, reload, setOutput, save}) {
 
   const [selectedDiv, setSelectedDiv] = useState('');
 
-  function changeDivHandler(event){
-    setSelectedDiv(event.target.value);
+  function resetField(){
     setSelectedMinutes([])
     setSelectedHours([]);
     setSelectedDays([]);
@@ -36,10 +29,15 @@ function Main({inputCron, reload, setOutput, save}) {
     setAtEveryOption('');
   }
 
+  function changeDivHandler(event){
+    setSelectedDiv(event.target.value);
+    resetField();
+  }
+
   useEffect(() => {
     if (inputCron) {
-      setOutput(ValidateInputString(inputCron, setSelectedMinutes, setMinutePeriodicity, setSelectedHours, setSelectedDays, setSelectedMonths, setSelectedDows, setAtEveryOption, setSelectedDiv));
-      console.log(`${selectedMinutes} ${selectedHours} ${selectedDays} ${selectedMonths} ${selectedDows}`);
+      resetField();
+      setOutput(ValidateAndSetData(inputCron, setSelectedMinutes, setMinutePeriodicity, setSelectedHours, setSelectedDays, setSelectedMonths, setSelectedDows, setAtEveryOption, setSelectedDiv));
     }
   }, [reload]);
 
@@ -59,14 +57,12 @@ function Main({inputCron, reload, setOutput, save}) {
       setMinutePeriodicity(event.target.value);
     }
   
-  
     return(
-  
       <div className= "row mx-3 p-0">
         <div className='row'>
           <div className='col-1 my-3'>
             <div className='d-flex'>
-              <input type='radio' checked={atEveryOption === 'at'} value={'at'} onChange={atEveryChangeHandler}/>At
+              <input type='radio' checked={atEveryOption === 'at'} value={'at'} onChange={atEveryChangeHandler}/><label className='p-2'>At</label>
             </div>
           </div>
         
@@ -75,7 +71,7 @@ function Main({inputCron, reload, setOutput, save}) {
           </div> 
           <div className='col-4 my-3'>
             <div className='d-flex'>
-              <span className='' style={{width:30}}>{data.minute.prefix}</span>
+              <span className='py-2' style={{width:30}}>{data.minute.prefix}</span>
               <CustomMultiSelect selectedOptions={selectedMinutes} setSelectedOptions={setSelectedMinutes} option = {data.minute}/>   
             </div>
             
@@ -84,7 +80,7 @@ function Main({inputCron, reload, setOutput, save}) {
         <div className='row'>
           <div className='col-1 my-3'>
             <div className='d-flex '>
-              <input type='radio' checked={atEveryOption === 'every'} value={'every'} onChange={atEveryChangeHandler}/>Every
+              <input type='radio' checked={atEveryOption === 'every'} value={'every'} onChange={atEveryChangeHandler}/><label className='px-2'>Every</label>
             </div>
           </div>
           <div className='col-4 my-3'>
@@ -138,19 +134,19 @@ function Main({inputCron, reload, setOutput, save}) {
       <div className= "row mx-3 p-0">
           <div className='col-4 my-3 px-0'>
             <div className='d-flex align-items-start justify-content-start '>
-              <span className='' style={{width:30}}>{data.dom.prefix}</span>
-             <CustomMultiSelect selectedOptions={selectedDays} setSelectedOptions={setSelectedDays} option = {data.dom}/>      
+              <span className='py-2' style={{width:30}}>{data.dom.prefix}</span>
+              <CustomMultiSelect selectedOptions={selectedDays} setSelectedOptions={setSelectedDays} option = {data.dom}/>      
             </div>
           </div>
           <div className='col-4 my-3 px-0'>
             <div className='d-flex align-items-start justify-content-start '>
-              <span className='' style={{width:30}}>{data.hour.prefix}</span>
+              <span className='py-2' style={{width:30}}>{data.hour.prefix}</span>
               <CustomMultiSelect selectedOptions={selectedHours} setSelectedOptions={setSelectedHours}  option = {data.hour}/>
             </div>
           </div> 
           <div className='col-4 my-3 px-0'>
             <div className='d-flex align-items-start justify-content-start '>
-              <span className='' style={{width:30}}>{data.minute.prefix}</span>
+              <span className='py-2' style={{width:30}}>{data.minute.prefix}</span>
               <CustomMultiSelect selectedOptions={selectedMinutes} setSelectedOptions={setSelectedMinutes} option = {data.minute}/>   
             </div>
           </div>
@@ -164,19 +160,19 @@ function Main({inputCron, reload, setOutput, save}) {
       <div className= "row mx-3 p-0">
           <div className='col my-3 px-0'>
             <div className='d-flex align-items-start justify-content-start '>
-                <span className='' style={{width:30}}>{data.month.prefix}</span>
+                <span className='py-2' style={{width:30}}>{data.month.prefix}</span>
                 <CustomMultiSelect selectedOptions={selectedMonths} setSelectedOptions={setSelectedMonths} option = {data.month}/>  
             </div>     
           </div>
           <div className='col my-3 px-0'>
             <div className='d-flex align-items-start justify-content-start '>
-                <span className='' style={{width:30}}>{data.dom.prefix}</span>
+                <span className='py-2' style={{width:30}}>{data.dom.prefix}</span>
                 <CustomMultiSelect selectedOptions={selectedDays} setSelectedOptions={setSelectedDays}  option = {data.dom}/>
             </div> 
           </div>
           <div className='col my-3 px-0'>
             <div className='d-flex align-items-start justify-content-start '>
-                <span className='' style={{width:30}}>{data.dow.prefix}</span>
+                <span className='py-2' style={{width:30}}>{data.dow.prefix}</span>
                 <CustomMultiSelect selectedOptions={selectedDows} setSelectedOptions={setSelectedDows} option = {data.dow}/>
             </div>      
           </div> 
@@ -184,13 +180,13 @@ function Main({inputCron, reload, setOutput, save}) {
         <div className= "row mx-3 p-0">
           <div className='col-4 my-3 px-0'>
             <div className='d-flex align-items-start justify-content-start '>
-                <span className='' style={{width:30}}>{data.hour.prefix}</span>
+                <span className='py-2' style={{width:30}}>{data.hour.prefix}</span>
             <CustomMultiSelect selectedOptions={selectedHours} setSelectedOptions={setSelectedHours}  option = {data.hour}/>
             </div> 
           </div> 
           <div className='col-4 my-3 px-0'>
             <div className='d-flex align-items-start justify-content-start '>
-                <span className='' style={{width:30}}>{data.minute.prefix}</span>
+                <span className='py-2' style={{width:30}}>{data.minute.prefix}</span>
                 <CustomMultiSelect selectedOptions={selectedMinutes} setSelectedOptions={setSelectedMinutes} option = {data.minute}/>  
             </div> 
           </div>
@@ -201,23 +197,21 @@ function Main({inputCron, reload, setOutput, save}) {
 
   return(
     <div className= "border rounded">
-      <div className = "row mx-0">
-        <h3>Lets make CRON</h3>
-      </div>
       <div className='border rounded p-3'>
         <div  style={{minHeight:'50px'}}>
           <div className='d-flex justify-content-start'>
             <input  type="radio" checked={selectedDiv === 'daily'} value={'daily'} onChange={changeDivHandler} />
-            <h3 >Daily</h3>
+            <h3 className='px-2'>Daily</h3>
           </div>
         </div>
         {selectedDiv === 'daily' && <DailyBlock />}
       </div>
+      
       <div className='border rounded p-3'>
         <div  style={{minHeight:'50px'}}>
         <div className='d-flex justify-content-start'>
             <input  type="radio" checked={selectedDiv === 'weekly'} value={'weekly'} onChange={changeDivHandler} />
-            <h3 >Weekly</h3>
+            <h3 className='px-2'>Weekly</h3>
           </div>
         </div>
         {selectedDiv === 'weekly' && <WeeklyBlock/>}
@@ -227,7 +221,7 @@ function Main({inputCron, reload, setOutput, save}) {
         <div  style={{minHeight:'50px'}}>
         <div className='d-flex justify-content-start'>
             <input  type="radio" checked={selectedDiv === 'monthly'} value={'monthly'} onChange={changeDivHandler} />
-            <h3 >Monthly</h3>
+            <h3 className='px-2'>Monthly</h3>
           </div>
         </div>
         {selectedDiv === 'monthly' && <MonthlyBlock/>}
@@ -235,9 +229,9 @@ function Main({inputCron, reload, setOutput, save}) {
 
       <div className='border rounded p-3'>
         <div  style={{minHeight:'50px'}}>
-        <div className='d-flex justify-content-start'>
+          <div className='d-flex justify-content-start'>
             <input  type="radio" checked={selectedDiv === 'custom'} value={'custom'} onChange={changeDivHandler} />
-            <h3 >Custom</h3>
+            <h3 className='px-2'>Custom</h3>
           </div>
         </div>
         {selectedDiv === 'custom' && <CustomBlock/>}
@@ -265,8 +259,8 @@ function App() {
         <div className="col-2"></div>
         <div className="col">
           <Main inputCron={cronString} reload={reload} setOutput={setCronString} save={save}/>
-          <button className='btn btn-primary' onClick={onSaveClick}>Save</button>
-          <button className='btn btn-primary' onClick={onLoadClick}>Load</button>
+          <button className='btn btn-primary m-2' onClick={onSaveClick}>Save</button>
+          <button className='btn btn-primary m-2' onClick={onLoadClick}>Load</button>
           <input type='text' onChange={(sender) => setCronString(sender.target.value)} value={cronString}></input>
         </div>
         <div className="col-2"></div>

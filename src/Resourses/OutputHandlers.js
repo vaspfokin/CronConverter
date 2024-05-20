@@ -50,7 +50,7 @@ const getDowOutput = (selectedDows) => {
     if(selectedDows.length === 0) 
         return '*';
     else{
-        const indexes = selectedDows.map(item => data.dow.listOfOptions.indexOf(item));
+        const indexes = selectedDows.map(item => data.dow.listOfOptions.indexOf(item) + 1);
         const dow = indexes.sort((a, b) => a - b).join(',');
         return dow;
     }

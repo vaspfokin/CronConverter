@@ -1,22 +1,27 @@
 import { data } from "./Data";
-import { setTimeFromValues, setEveryMinutes, setDaysFromRange, setMonthsFromIndeces, setMonthFromRange, setDowsFromIndeces, setDowsFromRange, setDivFromInputString} from "./DataSetter";
+import { setTimeFromValues, setEveryMinutes, setDaysFromRange, setMonthsFromIndeces, setMonthFromRange, setDowsFromIndeces, setDowsFromRange, setDowsFromShortName, setDowsFromShortNameRange, setDivFromInputString} from "./DataSetter";
 
-function ValidateInputString(input, setSelectedMinutes, setMinutePeriodicity, setSelectedHours, setSelectedDays, setSelectedMonths, setSelectedDows, setAtEveryOption, setSelectedDiv){
+function ValidateAndSetData(input, setSelectedMinutes, setMinutePeriodicity, setSelectedHours, setSelectedDays, setSelectedMonths, setSelectedDows, setAtEveryOption, setSelectedDiv){
     const [newMinute, newHour, newDayMonth, newMonth, newDow] = input.split(' ');
     if(!newMinute || !newHour || !newDayMonth || !newMonth || !newDow)
         return 'String is invalid';
     if(!isCombinationHandled(newMinute, newHour, newDayMonth, newMonth, newDow))
         return 'This combination is not soported';
-    if(!isMinHourValid(newMinute, data.minute, setSelectedMinutes, setMinutePeriodicity, setAtEveryOption))
-        return 'Minute is not valid';
-    if(!isMinHourValid(newHour, data.hour, setSelectedHours))
-        return 'Hour is not valid';
-    if(!isDomValid(newDayMonth, setSelectedDays))
-        return 'Day Of Month is not valid';
-    if(!isMonthValid(newMonth, setSelectedMonths))
-        return 'Month is not valid';
-    if(!isDowValid(newDow, data.dow.shortNames, setSelectedDows))
-        return 'Day Of Week is not valid';
+    if(!trySetMinHour(newMinute, data.minute, setSelectedMinutes, setMinutePeriodicity, setAtEveryOption))
+        return 'This combination is not soported';
+        //return 'Minute is not valid';
+    if(!trySetMinHour(newHour, data.hour, setSelectedHours))
+        return 'This combination is not soported';
+       // return 'Hour is not valid';
+    if(!trySetDom(newDayMonth, setSelectedDays))
+        return 'This combination is not soported';
+       // return 'Day Of Month is not valid';
+    if(!trySetMonth(newMonth, setSelectedMonths))
+        return 'This combination is not soported';
+       // return 'Month is not valid';
+    if(!trySetDow(newDow, data.dow.shortNames, setSelectedDows))
+        return 'This combination is not soported';
+       // return 'Day Of Week is not valid';
     setDivFromInputString(newDayMonth, newMonth, newDow, setSelectedDiv);
     return 'all good';
 
@@ -38,7 +43,7 @@ function isCombinationHandled(min, hour, dom, month, dow){
     return true;
 }
 
-function isMinHourValid(input, data, setSelectedMinHour, setMinutePeriodicity, setAtEveryOption) {
+function trySetMinHour(input, data, setSelectedMinHour, setMinutePeriodicity, setAtEveryOption) {
     const listOfOptionsSingle = data.listOfOptions.map(value => (parseInt(value, 10)).toString());
 
 
@@ -83,7 +88,7 @@ function isMinHourValid(input, data, setSelectedMinHour, setMinutePeriodicity, s
     return false;
 }
 
-function isDomValid(input, setSelectedDays) {
+function trySetDom(input, setSelectedDays) {
     const min = 1;
     const max = 31;
     if (input === '*') {
@@ -126,7 +131,7 @@ function isDomValid(input, setSelectedDays) {
     return false;
 }
 
-function isMonthValid(input, setSelectedMonths) {
+function trySetMonth(input, setSelectedMonths) {
     const min = 1;
     const max = 12;
     if (input === '*') {
@@ -168,7 +173,7 @@ function isMonthValid(input, setSelectedMonths) {
     return false;
 }  
   
-function isDowValid(input, dowShortNames, setSelectedDows) {
+function trySetDow(input, dowShortNames, setSelectedDows) {
     // Define the min and max for the range a-b
     const min = 0;
     const max = 7;
@@ -220,6 +225,7 @@ function isDowValid(input, dowShortNames, setSelectedDows) {
         const uniqueValues = new Set(values);
         const allValid = values.every(value => dowShortNames.includes(value));
         if (values.length === uniqueValues.size && allValid) {
+            setDowsFromShortName(input, setSelectedDows);
             return true;
         }
     }
@@ -232,8 +238,9 @@ function isDowValid(input, dowShortNames, setSelectedDows) {
         const b = rangeShortNamesMatch[2];
         const indexA = dowShortNames.indexOf(a);
         const indexB = dowShortNames.indexOf(b);
-        if (indexA !== -1 && indexB !== -1 && indexA < indexB) {
-        return true;
+        if (indexA !== -1 && indexB !== -1 && (indexA < indexB || (indexA === 6))) {
+            setDowsFromShortNameRange(input, setSelectedDows)
+            return true;
         }
     }
 
@@ -241,4 +248,4 @@ function isDowValid(input, dowShortNames, setSelectedDows) {
     return false;
   }
 
-  export {ValidateInputString}
+  export {ValidateAndSetData}

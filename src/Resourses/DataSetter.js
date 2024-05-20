@@ -45,14 +45,13 @@ function setMonthFromRange(input, setSelectedMonths){
 
 function setDowsFromIndeces(input, setSelectedDows){
     const values = input.split(',');
-    
     const newDows = [];
+
     for(let i = 0; i < values.length; i++){
         let index = values[i];
         if(index == 0){
             index = 7;
         }
-        console.log('index ' + data.dow.listOfOptions[index - 1]);
         newDows.push(data.dow.listOfOptions[index - 1]);
     }
     setSelectedDows(newDows);
@@ -65,7 +64,6 @@ function setDowsFromRange(input, setSelectedDows){
     const newDows = [];
     for(let i = rangeFrom; i <= rangeTo; i++){
         if(i == 0){
-            console.log(data.dow.listOfOptions[6]);
             newDows.push(data.dow.listOfOptions[6]);
         } else
             newDows.push(data.dow.listOfOptions[i - 1]);
@@ -73,18 +71,43 @@ function setDowsFromRange(input, setSelectedDows){
     setSelectedDows(newDows);
 }
 
+function setDowsFromShortName(input, setSelectedDows){
+    const values = input.split(',');
+    const newDows = [];
+    for(let i = 0; i < values.length; i++){
+        let index = data.dow.shortNames.indexOf(values[i]);
+        newDows.push(data.dow.listOfOptions[index]);
+    }
+    setSelectedDows(newDows);
+}
+
+function setDowsFromShortNameRange(input, setSelectedDows){
+    const values = input.split('-');
+    const rangeFrom = data.dow.shortNames.indexOf(values[0]);
+    const rangeTo = data.dow.shortNames.indexOf(values[1]);
+    const newDows = [];
+    if(rangeFrom===6)
+        newDows.push(data.dow.listOfOptions[6]);
+    for(let i = (rangeFrom === 6 ? 0 : rangeFrom); i <= rangeTo; i++){
+        newDows.push(data.dow.listOfOptions[i]);
+    }
+    
+    setSelectedDows(newDows);
+}
+
 function setDivFromInputString(dom, month, dow, setSelectedDiv){
-    if(month.length > 0)
+    console.log(`${month} ${dom} ${dow}`);
+    if(!month.includes('*'))
         setSelectedDiv('custom');
-    else if(dom.length > 0 && dow.length > 0) 
+    else if(!(dom.includes('*') && dow.includes('*'))) 
         setSelectedDiv('custom');
-    else if(dom.length > 0)
+    else if(!dom.includes('*'))
         setSelectedDiv('monthly');
-    else if(dow.length > 0)
+    else if(!dow.includes('*'))
         setSelectedDiv('weekly');
     else setSelectedDiv('daily');
             
 }
 
 
-export {setTimeFromValues, setEveryMinutes, setDaysFromRange, setMonthsFromIndeces, setMonthFromRange, setDowsFromIndeces, setDowsFromRange, setDivFromInputString}
+export {setTimeFromValues, setEveryMinutes, setDaysFromRange, setMonthsFromIndeces, setMonthFromRange, setDowsFromIndeces, setDowsFromRange, setDivFromInputString, setDowsFromShortName, setDowsFromShortNameRange}
